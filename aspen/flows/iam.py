@@ -111,7 +111,7 @@ if __name__ == "__main__":
     )
 
     if "all-project-recommendations" == flow:
-
+        # get projects
         command = [
             "python3",
             "-m",
@@ -130,6 +130,7 @@ if __name__ == "__main__":
 
         subprocess.run(command)
 
+        # read the projects
         method = options(method=project_write_raw_file_method)
 
         read_obj = Read(
@@ -142,7 +143,11 @@ if __name__ == "__main__":
         storage = Storage(read_obj=read_obj)
         projects = storage.read()
 
+        # list the projects
+
         for project in projects[:project_limit]:
+
+            # get recommendations for each project
 
             project_id = project["id"]
             logging.info(f"Getting data for {project_id}")

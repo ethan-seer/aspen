@@ -3,6 +3,7 @@
 ## Get all project recommendations
 ```
 bash
+export GOOGLE_APPLICATION_CREDENTIALS
 python3 -m flows.iam \
     -f all-project-recommendations \
     -c [path-to-credentials] \

@@ -3,21 +3,23 @@
 ### Google Cloud Storage
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export GCP_BUCKET=[name-of-bucket]
 aspen-iam \
     -s cloudresourcemanager \
     -a fetch \
-    -wf google_cloud_storage jsonl random-bucket-12309/data/iam/raw/projects/2021/09/13/data.jsonl \
+    -wf google_cloud_storage jsonl $GCP_BUCKET/data/iam/raw/projects/2021/09/13/data.jsonl \
     -c $GOOGLE_APPLICATION_CREDENTIALS
 ```
 
 # Local
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export GCP_BUCKET=[name-of-bucket]
 aspen-iam 
     -s cloudresourcemanager 
     -a fetch 
     -c $GOOGLE_APPLICATION_CREDENTIALS
-    -wf open jsonl random-bucket-12309/data/iam/raw/projects/2021/09/13/data.jsonl
+    -wf open jsonl $GCP_BUCKET/data/iam/raw/projects/2021/09/13/data.jsonl
 ```
 
 # Get Recommendations for one project
