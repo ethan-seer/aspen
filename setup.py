@@ -18,6 +18,7 @@ install_requires = [
     "google-auth-oauthlib==0.4.6",
     "pytest==6.2.5",
     "google-cloud-storage==1.42.2",
+    "google-cloud-pubsub==2.8.0",
 ]
 
 
