@@ -72,7 +72,6 @@ rsa==4.7.2
 selenium-wire==4.5.2
 six==1.14.0
 soupsieve==2.2.1
-SQLAlchemy==1.2.19
 toml==0.10.0
 tqdm==4.62.2
 typed-ast==1.4.1
