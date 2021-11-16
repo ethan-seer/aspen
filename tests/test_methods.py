@@ -6,6 +6,7 @@ from google.cloud.storage.bucket import Bucket
 from google.cloud.storage.blob import Blob
 
 from aspen.storage.methods import GoogleCloudStorage
+from aspen.storage.methods import GoogleBigQuery
 
 TEST_DATA_STR = """HI THERE"""
 
@@ -77,3 +78,20 @@ def test_google_cloud_read(write_data, unique_read_obj):
 
     result = unique_read_obj.read()
     assert result == TEST_DATA_STR
+
+
+@pytest.mark.methods
+@pytest.mark.bigquery_read
+def test_bigquery_read():
+    query = """
+        SELECT name, SUM(number) as total_people
+        FROM `bigquery-public-data.usa_names.usa_1910_2013`
+        WHERE state = 'TX'
+        GROUP BY name, state
+        ORDER BY total_people DESC
+        LIMIT 20
+    """
+    result = GoogleBigQuery(destination=query, service_account=SERVICE_ACCOUNT).read()
+
+    assert len(result) > 0
+    assert list(result[0].keys()) == ["name", "total_people"]

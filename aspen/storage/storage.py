@@ -60,7 +60,7 @@ class Storage:
 
         return "\n".join(csv_data)
 
-    def _format_data(self, data):
+    def _format_write_data(self, data):
 
         # if the format is known
         if self.write_obj.extension in Storage.WRITE_FORMATS.keys():
@@ -90,7 +90,7 @@ class Storage:
 
     def write(self, data):
         """jsonl needs to be a list. if a list is passed in it will be joined with a space"""
-        formatted_data = self._format_data(data)
+        formatted_data = self._format_write_data(data)
 
         self.write_obj.method(
             destination=self.write_obj.destination,

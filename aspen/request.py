@@ -9,13 +9,14 @@ from aspen.utils import timer
 
 class APIClient:
 
-    """Container for all API clients, i.e. not Cloud Functions, Request or Selenium"""
+    """Container for all API clients, i.e. not Cloud Functions, Request"""
 
     SERVICES = {
         "GoogleCloud": {
             "cloudresourcemanager": discovery.build,
             "recommender": discovery.build,
             "storage": discovery.build,
+            "admin": discovery.build,
         }
     }
 
@@ -25,8 +26,10 @@ class APIClient:
         self.credentials = get_credentials(credentials=credentials)
         self.client = None
 
+        self.version = "directory_v1" if self.service == "admin" else "v1"
+
         if self.provider == "GoogleCloud":
 
             self.client = APIClient.SERVICES[self.provider][self.service](
-                self.service, "v1", credentials=self.credentials
+                self.service, self.version, credentials=self.credentials
             )

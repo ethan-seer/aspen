@@ -2,62 +2,64 @@
 ## Get all projects
 ### Google Cloud Storage
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export GLOBAL_GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export LOCAL_GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
 export GCP_BUCKET=[name-of-bucket]
-aspen-iam \
+aspen \
     -s cloudresourcemanager \
-    -a fetch \
-    -wf google_cloud_storage jsonl $GCP_BUCKET/data/iam/raw/projects/2021/09/13/data.jsonl \
-    -c $GOOGLE_APPLICATION_CREDENTIALS
+    -m fetch \
+    -ws google_cloud_storage jsonl $GCP_BUCKET/iam/raw/projects/2021/11/02/data.jsonl $LOCAL_GOOGLE_APPLICATION_CREDENTIALS \
+    -gc $GLOBAL_GOOGLE_APPLICATION_CREDENTIALS
 ```
 
 # Local
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export GLOBAL_GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
 export GCP_BUCKET=[name-of-bucket]
-aspen-iam 
+aspen 
     -s cloudresourcemanager 
-    -a fetch 
-    -c $GOOGLE_APPLICATION_CREDENTIALS
-    -wf open jsonl $GCP_BUCKET/data/iam/raw/projects/2021/09/13/data.jsonl
+    -m fetch 
+    -gc $GLOBAL_GOOGLE_APPLICATION_CREDENTIALS
+    -ws open jsonl $GCP_BUCKET/iam/raw/projects/2021/11/01/data.jsonl
 ```
 
 # Get Recommendations for one project
 ## Google Cloud Storage
 ```bash
 export GCP_PROJECT_NAME=[gcp-project-name]
-export GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
-aspen-iam \
+export GLOBAL_GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+aspen \
     -s recommender \
-    -a fetch \
-    -c $GOOGLE_APPLICATION_CREDENTIALS
-    -wf google_cloud_storage jsonl "random-bucket-12309/data/iam/raw/recommendations/$GCP_PROJECT_NAME/2021/09/27/data.jsonl" \
-    -pid $GCP_PROJECT_NAME
+    -m fetch \
+    -p "{\"project_id\": \"${GCP_PROJECT_NAME}\"}" \
+    -gc $GLOBAL_GOOGLE_APPLICATION_CREDENTIALS \
+    -ws google_cloud_storage jsonl "$GCP_BUCKET/iam/raw/recommendations/$GCP_PROJECT_NAME/2021/11/01/data.jsonl" $LOCAL_GOOGLE_APPLICATION_CREDENTIALS
 ```
 
 # Parse Recommendations for one project
 ## Google Cloud Storage
 ```bash
 export GCP_PROJECT_NAME=[gcp-project-name]
-export GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export GLOBAL_GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
 export GCP_BUCKET=[name-of-bucket]
-aspen-iam \
+aspen \
     -s recommender \
-    -a parse \
-    -c $GOOGLE_APPLICATION_CREDENTIALS \
-    -rf google_cloud_storage jsonl "$GCP_BUCKET/data/iam/raw/recommendations/$GCP_PROJECT_NAME/2021/09/27/data.jsonl" \
-    -wf google_cloud_storage jsonl "$GCP_BUCKET/data/iam/parsed/recommendations/$GCP_PROJECT_NAME/2021/09/27/data.jsonl" \
-    -pid "$GCP_PROJECT_NAME"
+    -m parse \
+    -gc $GLOBAL_GOOGLE_APPLICATION_CREDENTIALS \
+    -rs google_cloud_storage jsonl "$GCP_BUCKET/iam/raw/recommendations/$GCP_PROJECT_NAME/2021/11/01/data.jsonl" $LOCAL_GOOGLE_APPLICATION_CREDENTIALS \
+    -ws google_cloud_storage jsonl "$GCP_BUCKET/iam/parsed/recommendations/$GCP_PROJECT_NAME/2021/11/01/data.jsonl" $LOCAL_GOOGLE_APPLICATION_CREDENTIALS
 ```
 
-# Local
+# Query BigQuery and Save to Cloud Storage
+## Google Cloud Storage
 ```bash
-export GCP_PROJECT_NAME=[gcp-project-name]
-aspen-iam \
-    -s recommender \
-    -a fetch \
-    -c [path-to-credentials] \
-    -wf 'google_cloud_storage jsonl data/iam/raw/recommendations/{GCP_PROJECT_NAME}/2021/09/13/data.jsonl' \
-    -pid $GCP_PROJECT_NAME
+export GLOBAL_GOOGLE_APPLICATION_CREDENTIALS=[path-to-credentials]
+export GCP_BUCKET=[name-of-bucket]
+aspen \
+    -s storageclient \
+    -m read_to_write \
+    -gc  $LOCAL_GOOGLE_APPLICATION_CREDENTIALS \
+    -rs google_bigquery str 'SELECT name FROM `bigquery-public-data.usa_names.usa_1910_2013` LIMIT 20' \
+    -ws google_cloud_storage jsonl random-bucket-12309/2021/11/01/saved_data.jsonl $LOCAL_GOOGLE_APPLICATION_CREDENTIALS
 ```
 

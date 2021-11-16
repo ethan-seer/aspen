@@ -1,15 +1,10 @@
 import logging
 import os
 from collections import namedtuple
-import attr
-import json
-from pprint import pprint as p
-
-from googleapiclient import discovery
 
 
 from aspen.storage import Storage
-from aspen.utils import edit_keys
+from aspen.request import APIClient
 
 Project = namedtuple(
     "Project",
@@ -27,12 +22,15 @@ Project = namedtuple(
 class CloudResourceManager:
     """Uses Google's Cloud Resource Manager"""
 
-    def __init__(
-        self,
-    ):
-        pass
+    def __init__(self, credentials=None):
+        self.credentials = credentials
+        self.request = APIClient(
+            provider="GoogleCloud",
+            service="cloudresourcemanager",
+            credentials=self.credentials,
+        )
 
-    def fetch(self, request, write_storage=None, **options):
+    def fetch(self, write_storage=None, **options):
 
         """returns a series of projects"""
         token = None
@@ -43,7 +41,9 @@ class CloudResourceManager:
 
         while True:
 
-            request = request.client.projects().list(pageToken=token, filter=filter)
+            request = self.request.client.projects().list(
+                pageToken=token, filter=filter
+            )
             response = request.execute()
 
             for project in response.get("projects", []):
@@ -110,16 +110,19 @@ def recursive_items(dictionary):
 
 
 class Recommender:
-    def __init__(
-        self,
-    ):
-        pass
+    """HI"""
 
-    def fetch(self, request, project_id, parent=None, write_storage=None):
+    def __init__(self, credentials=None):
+        self.credentials = credentials
+        self.request = APIClient(
+            provider="GoogleCloud", service="recommender", credentials=self.credentials
+        )
+
+    def fetch(self, project_id, parent=None, write_storage=None):
 
         parent = f"projects/{project_id}/locations/global/insightTypes/google.iam.policy.Insight"
         insights = (
-            request.client.projects()
+            self.request.client.projects()
             .locations()
             .insightTypes()
             .insights()

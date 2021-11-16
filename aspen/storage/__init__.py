@@ -4,9 +4,14 @@ from aspen.storage.storage import Write
 
 from aspen.storage.methods import Open
 from aspen.storage.methods import GoogleCloudStorage
+from aspen.storage.methods import GoogleBigQuery
 
 
-option_values = {"open": Open, "google_cloud_storage": GoogleCloudStorage}
+option_values = {
+    "open": Open,
+    "google_cloud_storage": GoogleCloudStorage,
+    "google_bigquery": GoogleBigQuery,
+}
 
 
 def options(method):

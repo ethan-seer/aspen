@@ -35,7 +35,7 @@ def crm_request(credentials):
 
 
 @pytest.fixture
-def crm(credentials):
+def crm():
     yield CloudResourceManager()
 
 
@@ -95,7 +95,7 @@ RECOMMENDER_PROJECT_ID = os.environ.get("RECOMMENDER_PROJECT_ID")
 def test_recommender_fetch_without_storage(r, r_request):
     if RECOMMENDER_PROJECT_ID:
 
-        members = r.fetch(request=r_request, project_id=RECOMMENDER_PROJECT_ID)
+        members = r.fetch(project_id=RECOMMENDER_PROJECT_ID)
 
         assert len(members) > 0
     else:
@@ -117,7 +117,6 @@ def test_recommender_with_storage(r, r_request):
 
         write_storage = Storage(write_obj=write_obj)
         members = r.fetch(
-            request=r_request,
             project_id=RECOMMENDER_PROJECT_ID,
             write_storage=write_storage,
         )
@@ -148,7 +147,6 @@ def test_recommender_parse(r, r_request):
 
         write_storage = Storage(write_obj=write_obj)
         members = r.fetch(
-            request=r_request,
             project_id=RECOMMENDER_PROJECT_ID,
             write_storage=write_storage,
         )

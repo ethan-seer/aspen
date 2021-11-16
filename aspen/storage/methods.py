@@ -6,6 +6,7 @@ import logging
 import pandas as pd
 from google.cloud import storage
 from google.cloud.storage.blob import Blob
+from google.cloud import bigquery
 
 # exceptions
 from google.api_core.exceptions import NotFound
@@ -121,3 +122,36 @@ class GoogleCloudStorage:
         except NotFound:
             logging.info(f"File is not found: {self.destination}")
             return
+
+
+class GoogleBigQuery:
+    """the service account must have"""
+
+    CONTENT_TYPE = {
+        "csv": "text/csv",
+        "json": "application/json",
+        "png": "image/png",  # TODO
+        "txt": "text/plain",
+        "jsonl": "text/plain",
+    }
+
+    def __init__(
+        self,
+        destination,
+        service_account,
+        extension="txt",
+        mode=None,
+    ):
+        self.destination = destination  # note: the bucket name is the first folder
+        self.service_account = service_account  # can be json or file
+        self.extension = extension
+        self._credentials = get_credentials(credentials=service_account)
+        self._client = bigquery.Client(credentials=self._credentials)  # GCS client
+
+    def write(self, data):
+        raise NotImplementedError
+
+    def read(self):
+        query_job = self._client.query(self.destination)  # Query a table
+        result = query_job.result()
+        return [dict(row) for row in result]

@@ -24,7 +24,7 @@ install_requires = [
 
 setup(
     name="aspen",
-    version="0.0.2",
+    version="0.0.3",
     author="Ethan Lyon",
     author_email="ethanl@seerinteractive.com",
     description=("A simple library to read and write data."),
@@ -33,5 +33,5 @@ setup(
     keywords="etl",
     install_requires=install_requires,
     long_description=read("README.md"),
-    entry_points={"console_scripts": ["aspen-iam = aspen.cli.iam:main"]},
+    entry_points={"console_scripts": ["aspen = aspen.cli.cli:main"]},
 )

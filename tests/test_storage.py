@@ -57,15 +57,15 @@ def test_storage_write_with_format_csv():
 
 
 @pytest.mark.storage
-@pytest.mark.storage_format_data
-def test_storage_format_data():
+@pytest.mark.storage_format_write_data
+def test_storage_format_write_data():
     write_obj = Write(
         destination=FILE_NAME_TXT,
         method=Open,
     )
 
     storage = Storage(write_obj=write_obj)
-    assert storage._format_data(TEST_DATA_TXT) == EXPECTED_DATA_JSONL
+    assert storage._format_write_data(TEST_DATA_TXT) == EXPECTED_DATA_JSONL
 
 
 @pytest.mark.storage
@@ -100,7 +100,6 @@ def test_storage_read():
     storage.write(data=TEST_DATA_TXT)
 
     result = storage.read()
-    print(result)
 
     assert result == [{"a": "b"}, {"c": "d"}]
 
@@ -115,7 +114,7 @@ def test_storage_format_data_jsonl():
     write_obj = Write(destination=FILE_NAME_TXT, method=Open, extension="jsonl")
     storage = Storage(write_obj=write_obj)
 
-    assert storage._format_data(TEST_DATA_TXT) == EXPECTED_DATA_JSONL
+    assert storage._format_write_data(TEST_DATA_TXT) == EXPECTED_DATA_JSONL
 
 
 @pytest.mark.storage
