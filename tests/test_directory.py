@@ -18,4 +18,4 @@ from aspen.request import APIClient as APIRequest
 @pytest.mark.directory_get_group
 def test_directory_get_group():
     directory = Directory()
-    directory.get_group(group_name= 'abc')
+    directory.get_group(group_name="abc")
