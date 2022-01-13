@@ -5,11 +5,15 @@ import argparse
 import logging
 from pprint import pprint as p
 
+# third party libraries
 from google.oauth2 import service_account
+from PyBambooHR.PyBambooHR import (
+    PyBambooHR as BambooHR,
+)  # see https://github.com/smeggingsmegger/PyBambooHR/blob/master/PyBambooHR/PyBambooHR.py
 
 sys.path.append("..")
 
-# clients
+# local clients
 from aspen.iam import CloudResourceManager
 from aspen.iam import Recommender
 from aspen.directory import Directory
@@ -70,7 +74,7 @@ def main():
         type=str,
         default=None,
         required=False,
-        help="Default credentials that will be used if credentials are not attached to --read-source or --write-source",
+        help='Default credentials that will be used if credentials are not attached to --read-source or --write-source. If the credentials are a service account path, simply provide the path or if additional credentials are required to authenticate the class, use JSON, e.g. "{"credentials": "${MY CREDENTIALS}"}".',
     )
 
     parser.add_argument(
@@ -110,6 +114,14 @@ def main():
     source = args.source
     method = args.method
     credentials = args.global_credentials
+
+    class_args = None
+
+    try:
+        class_args = json.loads(credentials)
+    except:
+        class_args = {"credentials": credentials}
+
     params = json.loads(args.params)  # get the first item in list
 
     write_source = args.write_source
@@ -131,7 +143,7 @@ def main():
         write_storage = Storage(write_obj=write_obj)
         params.update({"write_storage": write_storage})
 
-    class_instance = eval(modules[source])(credentials=credentials)
+    class_instance = eval(modules[source])(**class_args)
 
     method_instance = getattr(class_instance, method)
 
