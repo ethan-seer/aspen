@@ -78,7 +78,7 @@ def remove_first_folder(file_name):
     return "/".join(file_name.split("/")[1:])
 
 
-def get_credentials(credentials):
+def get_credentials(credentials, scopes=None, admin_user=None):
     if not credentials:
         return
     try:
@@ -88,8 +88,12 @@ def get_credentials(credentials):
             service_account_info = json.loads(f.read())
 
     credentials = service_account.Credentials.from_service_account_info(
-        service_account_info
+        service_account_info, scopes=scopes
     )
+
+    if admin_user:  # for GCP Directory API
+        return credentials.with_subject(admin_user)
+
     return credentials
 
 
@@ -115,4 +119,3 @@ def edit_keys(dictionary, convert_function):
     else:
         return dictionary
     return new
-
